@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Test</title>
+	<script type="text/javascript" src="simple-file-validator.js"></script>
+</head>
+<body>
+<input type="file" name="dp">
+
+
+<script type="text/javascript">
+	setFileTypesOn("input[type='file']", "image", function (input, file) {
+		alert("Image format not supported");
+	});
+</script>
+
+</body>
+</html>

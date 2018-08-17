@@ -1,4 +1,4 @@
-function setFileTypesOn(selector, types, onInvalid, resetToNone = true) {
+function setFileTypesOn(selector, types, onInvalid) {
 
 	const fileTypes = {
 		image: ['jpg', 'jpeg', 'png'],
@@ -14,34 +14,45 @@ function setFileTypesOn(selector, types, onInvalid, resetToNone = true) {
 	}
 
 	function attachOnChangeListener(input) {
+
 		const tagName = input.tagName.toLowerCase();
 		const inputType = input.type.toLowerCase();
+
 		if (tagName === "input" && inputType === "file") {
-			input.addEventListener("change", checkFileTypeSupport);
+			input.addEventListener("change", checkInput);
 		} else {
 			l("Input type should be file.");
 		}
 	}
 
-	function checkFileTypeSupport() {
+	function checkInput() {
 
-		const value = this.value.toLowerCase();
-		var supported = false;
+		const files = this.files;
+
+		for (var i = 0; i < files.length; i++) {
+			const file = files[i];
+			const error = checkInputFile(file);
+			if (error) {
+				onInvalid(this, file);
+				this.style.borderColor = "red";
+			}
+		}
+	}
+
+	function checkInputFile(file) {
+
+		const name = file.name.toLowerCase();
+		var error = false;
 
 		supportedTypes.forEach(function(type) {
 			const ext = "." + type;
-			supported = supported || value.endsWith(ext);
-			if (supported) {
+			error = error || (!name.endsWith(ext));
+			if (error) {
 				return;
 			}
 		});
 
-		if (!supported) {
-			onInvalid(this);
-			if (resetToNone) {
-				this.value = "";
-			}
-		}
+		return error;
 	}
 
     if (Array.isArray(types)) {
