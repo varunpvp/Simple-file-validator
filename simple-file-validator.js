@@ -15,6 +15,7 @@ function setFileTypesOn(selector, types, onInvalid) {
 
 	function attachOnChangeListener(input) {
 
+		// adding accept support
 		const tagName = input.tagName.toLowerCase();
 		const inputType = input.type.toLowerCase();
 
