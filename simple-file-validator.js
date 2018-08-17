@@ -29,7 +29,8 @@ function setFileTypesOn(selector, types, onInvalid, resetToNone = true) {
 		var supported = false;
 
 		supportedTypes.forEach(function(type) {
-			supported = supported || value.endsWith("." + type);
+			const ext = "." + type;
+			supported = supported || value.endsWith(ext);
 			if (supported) {
 				return;
 			}
