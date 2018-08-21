@@ -1,13 +1,6 @@
-function setFileTypesOn(selector, types, onInvalid) {
+function setFileTypesOn(selector, accept, onInvalid) {
 
-	const fileTypes = {
-		image: ['jpg', 'jpeg', 'png'],
-		video: ['avi', 'wmv', 'mp4', 'mov', 'flv'],
-		audio: ['acc', 'ogg', 'wav', 'm4a', 'mp3'],
-		document: ['pdf', 'doc', 'docx']
-	};
-
-	var supportedTypes;
+	const supportedTypes = [];
 
 	function l(msg) {
 		console.log("[Simple File Validator] " + msg);
@@ -15,7 +8,6 @@ function setFileTypesOn(selector, types, onInvalid) {
 
 	function attachOnChangeListener(input) {
 
-		// adding accept support
 		const tagName = input.tagName.toLowerCase();
 		const inputType = input.type.toLowerCase();
 
@@ -32,10 +24,9 @@ function setFileTypesOn(selector, types, onInvalid) {
 
 		for (var i = 0; i < files.length; i++) {
 			const file = files[i];
-			const error = checkInputFile(file);
-			if (error) {
+			if (!checkInputFile(file)) {
 				onInvalid(this, file);
-				this.style.borderColor = "red";
+				// this.style.borderColor = "red";
 			}
 		}
 	}
@@ -43,29 +34,43 @@ function setFileTypesOn(selector, types, onInvalid) {
 	function checkInputFile(file) {
 
 		const name = file.name.toLowerCase();
-		var error = false;
+		var supported = false;
 
 		supportedTypes.forEach(function(type) {
-			const ext = "." + type;
-			error = error || (!name.endsWith(ext));
-			if (error) {
+			if (type.indexOf(".") != -1) {
+				supported = supported || name.endsWith(type);
+			} else if (type.indexOf("/") != -1) {
+				if (type.indexOf("*") != -1) {
+					supported = supported || file.type == type.replace("*", "");
+				} else {
+					supported = supported || file.type == type;
+				}
+			} else {
+				l(type + ": Unsupported type specified");
+			}
+
+			if (supported) {
 				return;
 			}
 		});
 
-		return error;
+		return supported;
 	}
 
-    if (Array.isArray(types)) {
-        supportedTypes = types;
-    } else if (typeof types == "string") {
-    	const type = types.toLowerCase();
-    	supportedTypes = fileTypes[type];
-    }
+    if (typeof accept == "string") {
+		accept.toLowerCase()
+			.replace(new RegExp(" ", 'g'), "")
+			.split(",")
+			.forEach(function (item) {
+				supportedTypes.push(item);
+			});
+    } else {
+		l("Accpet type is not a string");
+	}
     
-    if (supportedTypes) {
+    if (supportedTypes.length) {
         document.querySelectorAll(selector).forEach(attachOnChangeListener);
     } else {
-    	l("Unknown types");
+    	l("Accept not supported");
     }
 }

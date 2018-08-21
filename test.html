@@ -9,7 +9,7 @@
 
 
 <script type="text/javascript">
-	setFileTypesOn("input[type='file']", "image", function (input, file) {
+	setFileTypesOn("input[type='file']", "image/png,video/*,audio/*,.pdf", function (input, file) {
 		alert("Image format not supported");
 	});
 </script>
