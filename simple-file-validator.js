@@ -26,7 +26,6 @@ function setFileTypesOn(selector, accept, onInvalid) {
 			const file = files[i];
 			if (!checkInputFile(file)) {
 				onInvalid(this, file);
-				// this.style.borderColor = "red";
 			}
 		}
 	}
