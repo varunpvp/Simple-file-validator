@@ -5,12 +5,32 @@
 	<script type="text/javascript" src="simple-file-validator.js"></script>
 </head>
 <body>
-<input type="file" name="dp">
+
+Any image</br>
+<input type="file" id="dp"></br></br>
+Only JPG</br>
+<input type="file" id="cover"></br></br>
+Only mp4, webm</br>
+<input type="file" id="intro"></br></br>
+audio/mp3,.wav</br>
+<input type="file" id="theme"></br></br>
 
 
 <script type="text/javascript">
-	setFileTypesOn("input[type='file']", "image/png,video/*,audio/*,.pdf", function (input, file) {
+	setFileTypesOn("#dp", "image/*", function (input, file) {
 		alert("Image format not supported");
+	});
+
+	setFileTypesOn("#cover", "image/jpeg", function (input, file) {
+		alert("Image format not supported");
+	});
+
+	setFileTypesOn("#intro", ".mp4,.webm", function (input, file) {
+		alert("Video format not supported");
+	});
+
+	setFileTypesOn("#theme", "audio/mp3, .wav", function (input, file) {
+		alert("Audio format not supported");
 	});
 </script>
 
