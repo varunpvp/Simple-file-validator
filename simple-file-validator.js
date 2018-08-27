@@ -1,4 +1,4 @@
-function setFileTypesOn(selector, accept, onInvalid) {
+function setFileTypesOn(selector, rules) {
 
 	const TYPE_EXT = "ext";
 	const TYPE_MIME_ALL = "mime_all";
@@ -7,21 +7,35 @@ function setFileTypesOn(selector, accept, onInvalid) {
 	const EXT_REGEX = /^\.[a-z0-9]+$/;
 	const MIME_ALL_REGEX = /^[a-z0-9\-]+\/\*$/;
 	const MIME_ONLY_REGEX = /^[a-z0-9\-]+\/[a-z0-9\-]+$/;
+
+	const REGEX_SIZE_IN_KB = /^[0-9\.]+k$/;
+	const REGEX_SIZE_IN_MB = /^[0-9\.]+m$/;
 	
-	const supportedTypes = [];
-
-	var acceptString;
-
-	if (typeof accept == "string") {
-		acceptString = accept;
-	} else if (typeof accept == "object"
-		&& accept.accept 
-		&& typeof accept.accept == "string") {
-		acceptString = accept.accept;
+	if (!(typeof selector === "string" && selector)) {
+		l("No valid selector defined");
+		return;
 	}
 
-	if (acceptString) {
-		acceptString.toLowerCase()
+	if (!(typeof rules === "object" && rules)) {
+		l("No valid rules defined");
+		return;
+	}
+
+	const supportedTypes = [];
+
+	const accept = rules.accept;
+
+	var minSize = 0;
+	var maxSize = 0;
+
+	var onInvalid = function(input, file) {
+		console.log("Invalid input file");
+		console.log(input);
+		console.log(file);
+	};
+
+	if (typeof accept == "string" && accept) {
+		accept.toLowerCase()
 			.replace(new RegExp(" ", 'g'), "")
 			.split(",")
 			.forEach(function (acceptStringType) {
@@ -49,14 +63,22 @@ function setFileTypesOn(selector, accept, onInvalid) {
 				}
 			});
     } else {
-		l("Accept type(s) not provided");
+		l("No proper accept rule defined");
+	}
+	
+	if (rules.maxSize) {
+		maxSize = getSizeInBytes(rules.maxSize);
+	}
+
+	if (rules.minSize) {
+		minSize = getSizeInBytes(rules.minSize);
 	}
  
-    if (supportedTypes.length) {
-        document.querySelectorAll(selector).forEach(attachOnChangeListener);
-    } else {
-    	l("Accept type(s) not supported");
-    }
+	if (typeof rules.onInvalid === "function") {
+		onInvalid = rules.onInvalid;
+	}
+
+	document.querySelectorAll(selector).forEach(attachOnChangeListener);
 
 	function attachOnChangeListener(input) {
 
@@ -65,7 +87,7 @@ function setFileTypesOn(selector, accept, onInvalid) {
 
 		if (tagName === "input" && inputType === "file") {
 			input.addEventListener("change", checkInput);
-			// input.accept = acceptString; // experimental
+			input.accept = accept; // experimental
 		} else {
 			l("Input type should be file.");
 		}
@@ -77,8 +99,15 @@ function setFileTypesOn(selector, accept, onInvalid) {
 
 		for (var i = 0; i < files.length; i++) {
 			const file = files[i];
-			if (!checkInputFileType(file)) {
-				onInvalid(this, file);
+
+			const fileTypeError = checkInputFileType(file);
+
+			const fileSizeError = checkInputFileSize(file);
+
+			if (fileTypeError) {
+				onInvalid(this, file, fileTypeError);
+			} else if (fileSizeError) {
+				onInvalid(this, file, fileSizeError);
 			}
 		}
 	}
@@ -86,9 +115,9 @@ function setFileTypesOn(selector, accept, onInvalid) {
 	function checkInputFileType(file) {
 
 		const name = file.name.toLowerCase();
-		var supported = false;
+		var error = "Invalid file type";
 
-		supportedTypes.forEach(function(type) {
+		supportedTypes.every(function(type) {
 
 			const typeValue = type.typeValue;
 
@@ -106,14 +135,49 @@ function setFileTypesOn(selector, accept, onInvalid) {
 					break;
 			}
 
-			supported = supported || cateria;
-
-			if (supported) {
-				return;
+			if (cateria) {
+				error = false;
+				return false;
 			}
+			return true;
 		});
 
-		return supported;
+		return error;
+	}
+
+	function checkInputFileSize(file) {
+
+		const fileSize = file.size;
+
+		if (minSize && fileSize < minSize) {
+			return "File size small";
+		} else if (maxSize && fileSize > maxSize) {
+			return "File size large";
+		}
+
+		return false;
+	}
+
+	function getSizeInBytes(size) {
+		if (typeof size === "number") {
+			return size;
+		} else if (typeof size === "string") {
+
+			const actualSize = size.replace(new RegExp(" ", 'g'), "");
+
+			const isMb = REGEX_SIZE_IN_MB.test(actualSize);
+			const isKb = REGEX_SIZE_IN_KB.test(actualSize);
+
+			if (isMb || isKb) {
+				var sizeInBytes = Number(actualSize.substring(0, actualSize.length - 1));
+				sizeInBytes *= 1024;
+				if (isMb) {
+					sizeInBytes *= 1024;
+				}
+				return sizeInBytes;
+			}
+		}
+		return 0;
 	}
 
 	function l(msg) {

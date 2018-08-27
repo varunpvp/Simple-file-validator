@@ -17,20 +17,38 @@ audio/mp3,.wav</br>
 
 
 <script type="text/javascript">
-	setFileTypesOn("#dp", "image/*", function (input, file) {
+
+	function imageInvalid(input, file) {
 		alert("Image format not supported");
-	});
+	}
 
-	setFileTypesOn("#cover", "image/jpeg", function (input, file) {
-		alert("Image format not supported");
-	});
+	function videoInvalid(input, file, message) {
+		alert(message);
+	}
 
-	setFileTypesOn("#intro", ".mp4,.webm", function (input, file) {
-		alert("Video format not supported");
-	});
-
-	setFileTypesOn("#theme", "audio/mp3, .wav", function (input, file) {
+	function audioInvalid(input, file) {
 		alert("Audio format not supported");
+	}
+
+	setFileTypesOn("#dp", {
+		accept: "image/*",
+		onInvalid: imageInvalid
+	});
+
+	setFileTypesOn("#cover", {
+		accept: ".jpg, .jpeg", 
+		onInvalid: imageInvalid
+	});
+
+	setFileTypesOn("#intro", {
+		accept: ".webm,video/mp4",
+		minSize: "20m",
+		onInvalid: videoInvalid
+	});
+
+	setFileTypesOn("#theme", { 
+		accept: "audio/mp3, .wav", 
+		onInvalid: audioInvalid
 	});
 </script>
 
