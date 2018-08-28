@@ -1,5 +1,9 @@
 function setFileTypesOn(selector, rules) {
 
+	const ERROR_TYPE = 1;
+	const ERROR_MAX_SIZE = 2;
+	const ERROR_MIN_SIZE = 3;
+
 	const TYPE_EXT = "ext";
 	const TYPE_MIME_ALL = "mime_all";
 	const TYPE_MIME_ONLY = "mime_only";
@@ -87,7 +91,7 @@ function setFileTypesOn(selector, rules) {
 
 		if (tagName === "input" && inputType === "file") {
 			input.addEventListener("change", checkInput);
-			input.accept = accept; // experimental
+			input.accept = accept;
 		} else {
 			l("Input type should be file.");
 		}
@@ -115,7 +119,7 @@ function setFileTypesOn(selector, rules) {
 	function checkInputFileType(file) {
 
 		const name = file.name.toLowerCase();
-		var error = "Invalid file type";
+		var error = ERROR_TYPE;
 
 		supportedTypes.every(function(type) {
 
@@ -150,9 +154,9 @@ function setFileTypesOn(selector, rules) {
 		const fileSize = file.size;
 
 		if (minSize && fileSize < minSize) {
-			return "File size small";
+			return ERROR_MIN_SIZE;
 		} else if (maxSize && fileSize > maxSize) {
-			return "File size large";
+			return ERROR_MAX_SIZE;
 		}
 
 		return false;
