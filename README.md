@@ -1,8 +1,8 @@
 # Simple-file-validator
 
-# Some examples
+A simple input file validator for web pages
 
-<script type="text/javascript">
+## Usage
 
 	setFileTypesOn("#dp" /* any valid selector */, {
 		accept: "image/*", // file types to be allowed
@@ -28,4 +28,12 @@
 		onInvalid: audioInvalid
 	});
 
-</script>
+## Params
+
+`selector` - valid input file type selector, it can be any CSS selector
+
+`rules` - set of rules which will be applied to input file
+
+## Methods
+
+`setFileTypesOn` - apply set of rules to files by using selector
