@@ -41,5 +41,7 @@ A simple file validator for input file on web pages, No plugin or addons require
 ## Constants
 
 `SimpleFileValidator.ERROR_TYPE` - Indicates a file type error
+
 `SimpleFileValidator.ERROR_MAX_SIZE` - Indicates a file size large error
+
 `SimpleFileValidator.ERROR_MIN_SIZE` - Indicates a file size small error
