@@ -1,8 +1,10 @@
-function setFileTypesOn(selector, rules) {
+const SimpleFileValidator = {
+	ERROR_TYPE: 1,
+	ERROR_MAX_SIZE: 2,
+	ERROR_MIN_SIZE: 3
+};
 
-	const ERROR_TYPE = 1;
-	const ERROR_MAX_SIZE = 2;
-	const ERROR_MIN_SIZE = 3;
+function setFileRulesOn(selector, rules) {
 
 	const TYPE_EXT = "ext";
 	const TYPE_MIME_ALL = "mime_all";
@@ -33,7 +35,7 @@ function setFileTypesOn(selector, rules) {
 	var maxSize = 0;
 
 	var onInvalid = function(input, file) {
-		console.log("Invalid input file");
+		l("Invalid input file");
 		console.log(input);
 		console.log(file);
 	};
@@ -119,7 +121,7 @@ function setFileTypesOn(selector, rules) {
 	function checkInputFileType(file) {
 
 		const name = file.name.toLowerCase();
-		var error = ERROR_TYPE;
+		var error = SimpleFileValidator.ERROR_TYPE;
 
 		supportedTypes.every(function(type) {
 
@@ -154,9 +156,9 @@ function setFileTypesOn(selector, rules) {
 		const fileSize = file.size;
 
 		if (minSize && fileSize < minSize) {
-			return ERROR_MIN_SIZE;
+			return SimpleFileValidator.ERROR_MIN_SIZE;
 		} else if (maxSize && fileSize > maxSize) {
-			return ERROR_MAX_SIZE;
+			return SimpleFileValidator.ERROR_MAX_SIZE;
 		}
 
 		return false;
