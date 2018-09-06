@@ -4,25 +4,25 @@ A simple file validator for input file on web pages, No plugin or addons require
 
 ## Usage
 
-	setFileTypesOn("#dp" /* any valid selector */, {
+	setFileRulesOn("#dp" /* any valid selector */, {
 		accept: "image/*", // file types to be allowed
 		minSize: "10k", // min size of file
 		maxSize: "50k", // max size of file
 		onInvalid: imageInvalid // function to be called with (input, file, errorCode)
 	});
 
-	setFileTypesOn(".cover", {
+	setFileRulesOn(".cover", {
 		accept: ".jpg, .jpeg", 
 		onInvalid: imageInvalid
 	});
 
-	setFileTypesOn("#intro", {
+	setFileRulesOn("#intro", {
 		accept: ".webm,video/mp4",
 		maxSize: "20m",
 		onInvalid: videoInvalid 
 	});
 
-	setFileTypesOn("#theme", { 
+	setFileRulesOn("#theme", { 
 		accept: "audio/mp3, .wav", 
 		maxSize: "6m",
 		onInvalid: audioInvalid
