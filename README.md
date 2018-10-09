@@ -5,6 +5,7 @@ A simple file validator for input file on web pages, No plugin or addons require
 ## Usage
 
 	setFileRulesOn("#dp" /* any valid selector */, {
+		required: true, // state that this file is required
 		accept: "image/*", // file mime type
 		minSize: 10000, // minimum file size in bytes is 10000 bytes
 		maxSize: "50k", // maximum file size is 50KB
@@ -25,7 +26,9 @@ A simple file validator for input file on web pages, No plugin or addons require
 
 	setFileRulesOn("#theme", { 
 		accept: "audio/mp3, .wav, .m4a", 
-		onInvalid: audioInvalid
+		onInvalid: function(input, file, errorCode) { // simple error handler
+			// todo handle
+		}
 	});
 
 ## Params

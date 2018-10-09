@@ -10,9 +10,9 @@ function setFileRulesOn(selector, rules) {
 	const TYPE_MIME_ALL = "mime_all";
 	const TYPE_MIME_ONLY = "mime_only";
 
-	const EXT_REGEX = /^\.[a-z0-9]+$/;
-	const MIME_ALL_REGEX = /^[a-z0-9\-]+\/\*$/;
-	const MIME_ONLY_REGEX = /^[a-z0-9\-]+\/[a-z0-9\-]+$/;
+	const REGEX_EXT = /^\.[a-z0-9]+$/;
+	const REGEX_MIME_ALL = /^[a-z0-9\-]+\/\*$/;
+	const REGEX_MIME_ONLY = /^[a-z0-9\-]+\/[a-z0-9\-]+$/;
 
 	const REGEX_SIZE_IN_KB = /^[0-9\.]+k$/;
 	const REGEX_SIZE_IN_MB = /^[0-9\.]+m$/;
@@ -48,13 +48,13 @@ function setFileRulesOn(selector, rules) {
 
 				var typeClass, typeValue;
 
-				if (EXT_REGEX.test(acceptStringType)) {
+				if (REGEX_EXT.test(acceptStringType)) {
 					typeClass = TYPE_EXT;
 					typeValue = acceptStringType;
-				} else if (MIME_ALL_REGEX.test(acceptStringType)) {
+				} else if (REGEX_MIME_ALL.test(acceptStringType)) {
 					typeClass = TYPE_MIME_ALL;
 					typeValue = acceptStringType.replace("*", "");
-				} else if (MIME_ONLY_REGEX.test(acceptStringType)) {
+				} else if (REGEX_MIME_ONLY.test(acceptStringType)) {
 					typeClass = TYPE_MIME_ONLY;
 					typeValue = acceptStringType;
 				}
@@ -93,7 +93,13 @@ function setFileRulesOn(selector, rules) {
 
 		if (tagName === "input" && inputType === "file") {
 			input.addEventListener("change", checkInput);
+			// apply the accept rule to file input element
 			input.accept = accept;
+			// check if required is defined and set
+			if (rules.required) {
+				// apply the required rule
+				input.required = true;
+			}
 		} else {
 			l("Input type should be file.");
 		}
